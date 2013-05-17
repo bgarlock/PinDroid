@@ -139,10 +139,12 @@ public class AddBookmarkFragment extends Fragment implements PindroidFragment {
 				if(!hasFocus){
 					String url = mEditUrl.getText().toString();
 					
-					if(mEditDescription.getText().toString().equals("")) {
-						titleTask = new GetTitleTask().execute(url);
+					if(url != null && !url.equals("")) {
+						if(mEditDescription.getText().toString().equals("")) {
+							titleTask = new GetTitleTask().execute(url);
+						}
+						tagTask = new GetTagSuggestionsTask().execute(url);
 					}
-					tagTask = new GetTagSuggestionsTask().execute(url);
 				}
 			}
 		});
@@ -338,17 +340,19 @@ public class AddBookmarkFragment extends Fragment implements PindroidFragment {
     	protected ArrayList<Tag> doInBackground(String... args) {
     		url = args[0];
 	
-    		try {
-    			Account account = AccountHelper.getAccount(username, getActivity());
-    			
-				return PinboardApi.getSuggestedTags(url, account, getActivity());
-			} catch (AuthenticationException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (TooManyRequestsException e) {
-				e.printStackTrace();
-			}
+    		if(getActivity() != null) {
+	    		try {
+	    			Account account = AccountHelper.getAccount(username, getActivity());
+	    			
+					return PinboardApi.getSuggestedTags(url, account, getActivity());
+				} catch (AuthenticationException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (TooManyRequestsException e) {
+					e.printStackTrace();
+				}
+	    	}
 			return null;
     	}
     	
